@@ -1,59 +1,312 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏰 Sistem Informasi Pemesanan Tiket Wisata Istana Pasir
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel" alt="Laravel">
+  <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php" alt="PHP">
+  <img src="https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css" alt="TailwindCSS">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
 </p>
 
-## About Laravel
+Sistem informasi pemesanan tiket wisata online untuk **Istana Pasir Cilegon** - destinasi rekreasi keluarga dengan istana pasir termegah di Indonesia. Aplikasi ini mendukung manajemen tiket, pembayaran manual dengan upload bukti, verifikasi oleh admin, dan generate e-ticket otomatis.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📸 Screenshots
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Halaman Welcome | Dashboard Pengunjung |
+|:---------------:|:--------------------:|
 
-## Learning Laravel
+| Verifikasi Pembayaran | E-Ticket QR Code |
+|:---------------------:|:-----------------:|
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ✨ Fitur Utama
 
-## Laravel Sponsors
+### 👤 Pengunjung (Visitor)
+- Registrasi & login akun
+- Pemesanan tiket dengan kalkulasi harga otomatis
+- Pilih periode kunjungan (tanggal mulai - selesai)
+- Upload bukti pembayaran manual (transfer bank)
+- Download & cetak e-ticket dengan QR Code
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🔐 Admin
+- Dashboard statistik penjualan & pengunjung
+- CRUD manajemen tiket (harga, stok, deskripsi)
+- Verifikasi pembayaran (setujui/tolak)
+- Kelola data pemesanan
+- Laporan penjualan (filter periode)
 
-### Premium Partners
+### 👮 Petugas
+- Scan/input kode QR e-ticket
+- Validasi tiket masuk
+- Ubah status tiket menjadi "digunakan"
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 📊 Owner
+- Dashboard laporan lengkap
+- Statistik pendapatan & pengunjung
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🛠️ Teknologi & Stack
 
-## Code of Conduct
+| Kategori | Teknologi |
+|----------|-----------|
+| **Backend** | Laravel 12.x (PHP 8.2+) |
+| **Frontend** | Blade Templates + TailwindCSS 3.x |
+| **Database** | MySQL / SQLite |
+| **Auth** | Laravel Authentication (Session) |
+| **Icons** | Emoji (no external library) |
+| **QR Code** | SVG Placeholder (siap integrasi simple-qrcode) |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📋 Persyaratan Sistem
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **PHP** >= 8.2
+- **Composer** >= 2.x
+- **Node.js** >= 18.x & **NPM**
+- **MySQL** >= 5.7 atau **SQLite**
+- **XAMPP/WAMP/Laragon** (untuk development lokal)
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🚀 Cara Instalasi
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/username/istana-pasir-tiket.git
+cd istana-pasir-tiket
+```
+
+### 2. Install Dependencies PHP
+
+```bash
+composer install
+```
+
+### 3. Install Dependencies Frontend
+
+```bash
+npm install
+```
+
+### 4. Setup Environment File
+
+```bash
+# Copy file .env.example
+copy .env.example .env    # Windows
+# atau
+cp .env.example .env      # Linux/Mac
+
+# Generate application key
+php artisan key:generate
+```
+
+### 5. Konfigurasi Database
+
+Edit file `.env` sesuai konfigurasi database Anda:
+
+**Option A: MySQL (Recommended)**
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=istana_pasir_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+**Option B: SQLite (Simple)**
+```env
+DB_CONNECTION=sqlite
+# Hapus/comment baris DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+```
+
+### 6. Jalankan Migrasi & Seeder
+
+```bash
+# Jalankan migrasi database
+php artisan migrate
+
+# Jalankan seeder (data awal: user & tiket)
+php artisan db:seed
+```
+
+### 7. Build Frontend Assets
+
+```bash
+npm run build
+```
+
+### 8. Jalankan Aplikasi
+
+```bash
+php artisan serve
+```
+
+Buka browser dan akses: **http://localhost:8000**
+
+---
+
+## 🔑 Akun Demo
+
+Setelah menjalankan `php artisan db:seed`, Anda dapat login dengan akun berikut:
+
+| Role | Email | Username | Password |
+|------|-------|----------|----------|
+| **Admin** | admin@istanapasir.test | admin | password |
+| **Owner** | owner@istanapasir.test | owner | password |
+| **Petugas** | petugas@istanapasir.test | petugas | password |
+| **Pengunjung** | pengunjung@istanapasir.test | pengunjung | password |
+
+> ⚠️ **Penting:** Ganti password akun ini saat deploy ke production!
+
+---
+
+## 📁 Struktur Folder Penting
+
+```
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/     # Logic controller
+│   │   └── Middleware/      # Role middleware
+│   └── Models/              # Eloquent models
+├── database/
+│   ├── migrations/          # Schema database
+│   └── seeders/             # Data awal
+├── resources/
+│   └── views/
+│       ├── admin/           # View admin
+│       ├── visitor/         # View pengunjung
+│       ├── petugas/         # View petugas
+│       └── owner/           # View owner
+└── routes/
+    └── web.php              # Routing aplikasi
+```
+
+---
+
+## 🔧 Command Penting
+
+```bash
+# Development server
+php artisan serve
+
+# Build CSS/JS (development)
+npm run dev
+
+# Build CSS/JS (production)
+npm run build
+
+# Reset database & seed ulang
+php artisan migrate:fresh --seed
+
+# Clear cache
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+```
+
+---
+
+## 🗄️ Diagram Alur Sistem
+
+```
+[Pengunjung] ── Registrasi/Login ──> [Dashboard]
+      │
+      ├── Pesan Tiket ──> Pilih Jenis & Jumlah ──> Checkout
+      │                                              │
+      │                                              ├── Upload Bukti Bayar
+      │                                              │
+      │                                              ▼
+      │                                        [Admin Verifikasi]
+      │                                              │
+      │                         ┌────────────────────┴────────────────────┐
+      │                         │                                         │
+      │                    [Disetujui]                              [Ditolak]
+      │                         │                                         │
+      │                         ▼                                         │
+      │               Generate E-Ticket                           Ulang Upload
+      │                         │
+      │                         ▼
+      │               [Tampilkan QR Code]
+      │                         │
+      │                         ▼
+      │               [Petugas Scan/Validasi]
+      │                         │
+      │                         ▼
+      │                  Status: Digunakan
+      │
+      └── Lihat Riwayat Pemesanan
+```
+
+---
+
+## 🌐 Deployment ke Hosting
+
+### Persiapan
+
+1. Pastikan hosting mendukung **PHP 8.2+** dan **MySQL**
+2. Zip semua file project (kecuali `node_modules` dan `vendor`)
+
+### Langkah Deploy
+
+1. Upload zip ke `public_html` atau subfolder
+2. Extract file
+3. Set **Document Root** ke folder `/public`
+4. Import database MySQL via phpMyAdmin
+5. Edit `.env` sesuai konfigurasi hosting:
+   ```env
+   APP_URL=https://domain-anda.com
+   DB_DATABASE=name_db
+   DB_USERNAME=user_db
+   DB_PASSWORD=pass_db
+   ```
+6. Jalankan via SSH/terminal:
+   ```bash
+   composer install --optimize-autoloader --no-dev
+   php artisan key:generate
+   php artisan migrate --force
+   php artisan db:seed --force
+   ```
+
+---
+
+## ⚠️ Catatan Pengembangan
+
+### Fitur yang Belum Implementasi:
+
+1. **QR Code Real** - Saat ini menggunakan SVG placeholder. Untuk integrasi QR Code asli:
+   ```bash
+   composer require simplesoftwareio/simple-qrcode
+   ```
+
+2. **Halaman Welcome Dinamis** - Daftar tiket di halaman welcome masih hard-coded, sebaiknya diambil dari database
+
+3. **Validasi Stok Tiket** - Perlu penambahan validasi stok saat pemesanan
+
+4. **Edit Profil** - Fitur ubah password & profil pengguna
+
+5. **Reset Password** - Fitur lupa password via email
+
+---
+
+## 📄 License
+
+Project ini dibuat untuk keperluan pembelajaran dan dapat digunakan secara bebas di bawah lisensi [MIT](LICENSE).
+
+---
+
+## 👨‍💻 Author
+
+Dibuat dengan ❤️ untuk **Istana Pasir Cilegon**
+
+---
+
+## 🙏 Credits
+
+- [Laravel](https://laravel.com) - The PHP Framework
+- [TailwindCSS](https://tailwindcss.com) - A utility-first CSS framework
+
