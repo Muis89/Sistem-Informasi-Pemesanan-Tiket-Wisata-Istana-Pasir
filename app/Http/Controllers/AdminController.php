@@ -14,13 +14,13 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        $recentBookings = Pemesanan::with(['user', 'tiket', 'pembayaran'])
+        $recentBookings = Pemesanan::with(['user', 'detailPemesanans.tiket', 'pembayaran'])
             ->latest()
             ->take(5)
             ->get();
 
         return view('admin.dashboard', [
-            'totalVisitors' => Pemesanan::sum('jumlah_tiket'),
+            'totalVisitors' => \App\Models\DetailPemesanan::sum('jumlah_tiket'),
             'totalBookings' => Pemesanan::count(),
             'totalPayments' => Pembayaran::where('status_bayar', 'berhasil')->count(),
             'pendingPayments' => Pembayaran::where('status_bayar', 'pending')->count(),
@@ -55,7 +55,7 @@ class AdminController extends Controller
 
     public function bookings(Request $request)
     {
-        $allPemesanans = Pemesanan::with(['user', 'tiket', 'pembayaran', 'eTiket'])->latest()->get();
+        $allPemesanans = Pemesanan::with(['user', 'detailPemesanans.tiket', 'pembayaran', 'eTiket'])->latest()->get();
         $this->expireExpiredTickets($allPemesanans);
 
         $pemesanans = $allPemesanans;
@@ -82,7 +82,7 @@ class AdminController extends Controller
 
     public function payments()
     {
-        return view('admin.payments', ['pembayarans' => Pembayaran::with('pemesanan.user', 'pemesanan.tiket')->latest()->get()]);
+        return view('admin.payments', ['pembayarans' => Pembayaran::with('pemesanan.user', 'pemesanan.detailPemesanans.tiket')->latest()->get()]);
     }
 
     public function paymentProof(Pembayaran $pembayaran)
@@ -131,16 +131,19 @@ class AdminController extends Controller
 
     public function destroyBooking(Pemesanan $pemesanan)
     {
-        $pemesanan->load(['tiket', 'pembayaran', 'eTiket']);
+        $pemesanan->load(['detailPemesanans.tiket', 'pembayaran', 'eTiket']);
 
         if ($pemesanan->pembayaran?->bukti_bayar && Storage::disk('public')->exists($pemesanan->pembayaran->bukti_bayar)) {
             Storage::disk('public')->delete($pemesanan->pembayaran->bukti_bayar);
         }
 
         if ($pemesanan->status !== 'selesai' && $pemesanan->eTiket?->status_tiket !== 'digunakan') {
-            $pemesanan->tiket?->increment('stok', $pemesanan->jumlah_tiket);
+            foreach ($pemesanan->detailPemesanans as $detail) {
+                $detail->tiket?->increment('stok', $detail->jumlah_tiket);
+            }
         }
 
+        $pemesanan->detailPemesanans()->delete();
         $pemesanan->eTiket?->delete();
         $pemesanan->pembayaran?->delete();
         $pemesanan->delete();
@@ -160,10 +163,11 @@ class AdminController extends Controller
             ->map(function ($payments, $date) {
                 return [
                     'date' => $date,
-                    'total_tickets' => $payments->sum(fn ($payment) => optional($payment->pemesanan)->jumlah_tiket ?? 0),
+                    'total_tickets' => $payments->sum(fn ($payment) => optional($payment->pemesanan)->detailPemesanans->sum('jumlah_tiket') ?? 0),
                     'revenue' => $payments->sum('jumlah_bayar'),
-                    'items' => $payments->groupBy(fn ($payment) => optional(optional($payment->pemesanan)->tiket)->nama_tiket ?? 'Tanpa Tiket')
-                        ->map(fn ($items) => $items->sum(fn ($payment) => optional($payment->pemesanan)->jumlah_tiket ?? 0)),
+                    'items' => $payments->flatMap(fn ($payment) => $payment->pemesanan->detailPemesanans ?? collect())
+                        ->groupBy(fn ($detail) => optional($detail->tiket)->nama_tiket ?? 'Tanpa Tiket')
+                        ->map(fn ($details) => $details->sum('jumlah_tiket')),
                 ];
             })
             ->sortKeysDesc();

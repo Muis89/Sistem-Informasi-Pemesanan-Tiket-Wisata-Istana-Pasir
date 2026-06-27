@@ -79,8 +79,12 @@
                     <tr>
                         <td class="py-4 px-6 font-bold text-slate-900">#IP-{{ str_pad($pemesanan->id, 6, '0', STR_PAD_LEFT) }}</td>
                         <td class="py-4 px-6"><span class="block">{{ $pemesanan->user->name }}</span><span class="text-[10px] text-slate-400">{{ $pemesanan->user->email }}</span></td>
-                        <td class="py-4 px-6"><span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold">{{ $pemesanan->tiket->nama_tiket }}</span></td>
-                        <td class="py-4 px-6">{{ $pemesanan->jumlah_tiket }}</td>
+                        <td class="py-4 px-6">
+                            @foreach($pemesanan->detailPemesanans as $detail)
+                                <span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold mr-1 mb-1 block">{{ $detail->tiket->nama_tiket }}</span>
+                            @endforeach
+                        </td>
+                        <td class="py-4 px-6">{{ $pemesanan->detailPemesanans->sum('jumlah_tiket') }}</td>
                         <td class="py-4 px-6 font-bold">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</td>
                         <td class="py-4 px-6"><span class="block font-bold">{{ optional($pemesanan->tanggal_kunjungan)->format('d M Y') }}</span><span class="text-[10px] text-slate-400">Mulai</span></td>
                         <td class="py-4 px-6">

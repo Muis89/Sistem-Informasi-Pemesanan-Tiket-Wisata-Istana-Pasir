@@ -14,7 +14,7 @@ class VisitorController extends Controller
 {
     public function dashboard(Request $request)
     {
-        $pemesanans = $request->user()->pemesanans()->with(['tiket', 'pembayaran', 'eTiket'])->latest()->get();
+        $pemesanans = $request->user()->pemesanans()->with(['detailPemesanans.tiket', 'pembayaran', 'eTiket'])->latest()->get();
         $this->expireExpiredTickets($pemesanans);
 
         return view('visitor.dashboard', compact('pemesanans'));
@@ -28,38 +28,60 @@ class VisitorController extends Controller
     public function storeBooking(Request $request)
     {
         $data = $request->validate([
-            'id_tiket' => ['required', 'exists:tikets,id'],
-            'quantity' => ['required', 'integer', 'min:1', 'max:50'],
+            'tikets' => ['required', 'array', 'min:1'],
+            'tikets.*.id' => ['required', 'exists:tikets,id'],
+            'tikets.*.quantity' => ['required', 'integer', 'min:1', 'max:50'],
             'visit_start_date' => ['required', 'date', 'after_or_equal:today'],
             'visit_end_date' => ['required', 'date', 'after_or_equal:visit_start_date'],
         ]);
 
-        $tiket = Tiket::findOrFail($data['id_tiket']);
-        abort_if($tiket->stok < $data['quantity'], 422, 'Stok tiket tidak mencukupi.');
+        $totalHarga = 0;
+        $items = [];
+
+        foreach ($data['tikets'] as $item) {
+            $tiket = Tiket::findOrFail($item['id']);
+            if ($tiket->stok < $item['quantity']) {
+                return back()->withErrors(['message' => 'Stok tiket ' . $tiket->nama_tiket . ' tidak mencukupi.']);
+            }
+            $items[] = ['tiket' => $tiket, 'quantity' => $item['quantity']];
+            $totalHarga += $tiket->harga * $item['quantity'];
+        }
 
         $pemesanan = Pemesanan::create([
             'id_user' => $request->user()->id,
-            'id_tiket' => $tiket->id,
             'tanggal_pesan' => now(),
             'tanggal_kunjungan' => $data['visit_start_date'],
             'tanggal_berakhir' => $data['visit_end_date'],
-            'jumlah_tiket' => $data['quantity'],
-            'total_harga' => $tiket->harga * $data['quantity'],
+            'total_harga' => $totalHarga,
             'status' => 'pending',
         ]);
 
-        $tiket->decrement('stok', $data['quantity']);
+        foreach ($items as $item) {
+            $pemesanan->detailPemesanans()->create([
+                'id_tiket' => $item['tiket']->id,
+                'jumlah_tiket' => $item['quantity'],
+                'subtotal' => $item['tiket']->harga * $item['quantity'],
+            ]);
+            $item['tiket']->decrement('stok', $item['quantity']);
+        }
 
         return redirect()->route('visitor.checkout', $pemesanan)->with('success', 'Pemesanan dibuat. Silakan unggah bukti pembayaran.');
     }
 
+    /**
+     * @param \App\Models\Pemesanan $pemesanan
+     */
     public function checkout(Pemesanan $pemesanan)
     {
         abort_unless($pemesanan->id_user === auth()->id(), 403);
 
-        return view('visitor.checkout', ['pemesanan' => $pemesanan->load('tiket', 'pembayaran')]);
+        return view('visitor.checkout', ['pemesanan' => $pemesanan->load('detailPemesanans.tiket', 'pembayaran')]);
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Pemesanan $pemesanan
+     */
     public function uploadPayment(Request $request, Pemesanan $pemesanan)
     {
         abort_unless($pemesanan->id_user === auth()->id(), 403);
@@ -82,15 +104,18 @@ class VisitorController extends Controller
         return redirect()->route('visitor.dashboard')->with('success', 'Bukti pembayaran terkirim dan menunggu validasi admin.');
     }
 
+    /**
+     * @param \App\Models\Pemesanan $pemesanan
+     */
     public function ticket(Pemesanan $pemesanan)
     {
         abort_unless($pemesanan->id_user === auth()->id(), 403);
-        $pemesanan->load('tiket', 'user', 'eTiket');
+        $pemesanan->load('detailPemesanans.tiket', 'user', 'eTiket');
         abort_unless($pemesanan->eTiket, 404);
 
         $this->expireExpiredTickets(collect([$pemesanan]));
 
-        return view('visitor.ticket', ['pemesanan' => $pemesanan->refresh()->load('tiket', 'user', 'eTiket')]);
+        return view('visitor.ticket', ['pemesanan' => $pemesanan->refresh()->load('detailPemesanans.tiket', 'user', 'eTiket')]);
     }
 
     private function expireExpiredTickets($pemesanans): void

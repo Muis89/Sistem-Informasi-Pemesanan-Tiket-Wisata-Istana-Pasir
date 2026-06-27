@@ -2,6 +2,21 @@
 
 @section('title', 'Dashboard Pengunjung')
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    <style>
+        /* Mengubah kursor menjadi ikon zoom/kaca pembesar saat diarahkan ke foto */
+        .zoom-gallery img {
+            cursor: zoom-in;
+            transition: transform 0.2s ease-in-out;
+        }
+        /* Efek sedikit membesar saat di-hover */
+        .zoom-gallery img:hover {
+            transform: scale(1.02);
+        }
+    </style>
+@endpush
+
 @section('visitor-content')
 @php
     $activeCount = $pemesanans->filter(fn($p) => in_array($p->status, ['pending', 'dibayar']) && optional($p->eTiket)->status_tiket !== 'kadaluarsa')->count();
@@ -10,13 +25,40 @@
 @endphp
 @if (session('success'))<div class="mb-6 p-4 rounded-2xl bg-emerald-50 text-emerald-700 text-sm font-bold border border-emerald-100">{{ session('success') }}</div>@endif
 @if (session('error'))<div class="mb-6 p-4 rounded-2xl bg-rose-50 text-rose-700 text-sm font-bold border border-rose-100">{{ session('error') }}</div>@endif
-<div class="bg-gradient-to-r from-amber-500 to-sky-500 rounded-3xl p-6 sm:p-8 text-white shadow-lg shadow-amber-500/10 mb-8 relative overflow-hidden">
-    <div class="absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-white/10"></div><div class="absolute right-20 -top-10 w-24 h-24 rounded-full bg-white/10"></div>
-    <div class="max-w-2xl space-y-3 relative z-10">
-        <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold tracking-wider uppercase">👋 Selamat Datang</span>
-        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Halo, {{ auth()->user()->name }}!</h2>
-        <p class="text-sm sm:text-base text-slate-100 leading-relaxed">Pantau status pembayaran, pesan tiket baru, dan akses e-ticket Anda dari dashboard pengunjung Istana Pasir Cilegon.</p>
-        <div class="pt-2"><a href="{{ route('visitor.book') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm shadow-md hover:bg-slate-50 transition-all">🎟️ Beli Tiket Baru Sekarang</a></div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="bg-gradient-to-r from-amber-500 to-sky-500 rounded-3xl p-6 sm:p-8 text-white shadow-lg shadow-amber-500/10 relative overflow-hidden flex flex-col justify-center">
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-white/10"></div><div class="absolute right-20 -top-10 w-24 h-24 rounded-full bg-white/10"></div>
+        <div class="max-w-2xl space-y-3 relative z-10">
+            <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold tracking-wider uppercase">👋 Selamat Datang</span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Halo, {{ auth()->user()->name }}!</h2>
+            <p class="text-sm sm:text-base text-slate-100 leading-relaxed">Pantau status pembayaran, pesan tiket baru, dan akses e-tiket Anda dari dashboard pengunjung Istana Pasir Cilegon.</p>
+            <div class="pt-2"><a href="{{ route('visitor.book') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm shadow-md hover:bg-slate-50 transition-all">🎟️ Beli Tiket Baru Sekarang</a></div>
+        </div>
+    </div>
+    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Galeri Istana Pasir</h3>
+
+        <div class="grid grid-cols-3 gap-4 zoom-gallery">
+
+            <div class="aspect-square w-full">
+                <a href="{{ asset('images/estetik.jpeg') }}" class="glightbox" data-gallery="galeri-istana">
+                    <img src="{{ asset('images/estetik.jpeg') }}" alt="Foto 1" class="w-full h-full object-cover rounded-xl border border-slate-100">
+                </a>
+            </div>
+
+            <div class="aspect-square w-full">
+                <a href="{{ asset('images/istana.jpg') }}" class="glightbox" data-gallery="galeri-istana">
+                    <img src="{{ asset('images/istana.jpg') }}" alt="Foto 2" class="w-full h-full object-cover rounded-xl border border-slate-100">
+                </a>
+            </div>
+
+            <div class="aspect-square w-full">
+                <a href="{{ asset('images/kolam.jpg') }}" class="glightbox" data-gallery="galeri-istana">
+                    <img src="{{ asset('images/kolam.jpg') }}" alt="Foto 3" class="w-full h-full object-cover rounded-xl border border-slate-100">
+                </a>
+            </div>
+
+        </div>
     </div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
@@ -52,7 +94,15 @@
                         default => 'bg-amber-100 text-amber-800',
                     };
                 @endphp
-                <tr class="hover:bg-slate-50/50 transition-colors"><td class="py-4 px-6 font-bold text-slate-900">#IP-{{ str_pad($pemesanan->id, 6, '0', STR_PAD_LEFT) }}</td><td class="py-4 px-6"><span class="block font-bold">{{ optional($pemesanan->tanggal_kunjungan)->format('d M Y') }} - {{ optional($validUntil)->format('d M Y') }}</span><span class="text-[10px] {{ $visitExpired ? 'text-rose-500' : 'text-slate-400' }}">{{ $visitExpired ? 'Periode berakhir' : 'Periode aktif dipilih user' }}</span></td><td class="py-4 px-6"><span class="inline-flex px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-bold text-xs">{{ $pemesanan->tiket->nama_tiket }}</span></td><td class="py-4 px-6">{{ $pemesanan->jumlah_tiket }} Tiket</td><td class="py-4 px-6 font-extrabold text-slate-950">Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</td><td class="py-4 px-6"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold {{ $badge }}">{{ $label }}</span></td><td class="py-4 px-6 text-right"><div class="flex justify-end gap-2">@if($pemesanan->eTiket)<a href="{{ route('visitor.ticket', $pemesanan) }}" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold shadow-sm transition-all">🎫 Lihat E-Tiket</a>@elseif($visitExpired)<span class="px-3.5 py-1.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold">Tidak Bisa Dibayar</span>@else<a href="{{ route('visitor.checkout', $pemesanan) }}" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-bold shadow-sm transition-all">💳 Bayar / Upload</a>@endif</div></td></tr>
+                <tr class="hover:bg-slate-50/50 transition-colors"><td class="py-4 px-6 font-bold text-slate-900">#IP-{{ str_pad($pemesanan->id, 6, '0', STR_PAD_LEFT) }}</td><td class="py-4 px-6"><span class="block font-bold">{{ optional($pemesanan->tanggal_kunjungan)->format('d M Y') }} - {{ optional($validUntil)->format('d M Y') }}</span><span class="text-[10px] {{ $visitExpired ? 'text-rose-500' : 'text-slate-400' }}">{{ $visitExpired ? 'Periode berakhir' : 'Periode aktif dipilih user' }}</span></td><td class="py-4 px-6">
+    @foreach($pemesanan->detailPemesanans as $detail)
+        <span class="inline-flex px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-bold text-xs mr-1 mb-1">{{ $detail->tiket->nama_tiket }}</span>
+    @endforeach
+</td>
+<td class="py-4 px-6">{{ $pemesanan->detailPemesanans->sum('jumlah_tiket') }} Tiket</td>
+<td class="py-4 px-6 font-extrabold text-slate-950">Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</td>
+<td class="py-4 px-6"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold {{ $badge }}">{{ $label }}</span></td>
+<td class="py-4 px-6 text-right"><div class="flex justify-end gap-2">@if($pemesanan->eTiket)<a href="{{ route('visitor.ticket', $pemesanan) }}" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold shadow-sm transition-all">🎫 Lihat E-Tiket</a>@elseif($visitExpired)<span class="px-3.5 py-1.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold">Tidak Bisa Dibayar</span>@else<a href="{{ route('visitor.checkout', $pemesanan) }}" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-bold shadow-sm transition-all">💳 Bayar / Upload</a>@endif</div></td></tr>
                 @empty
                 <tr><td colspan="7" class="py-12 px-6 text-center"><div class="space-y-3"><span class="text-5xl block">🏖️</span><p class="font-bold text-slate-700">Belum ada pemesanan.</p><a href="{{ route('visitor.book') }}" class="inline-flex px-4 py-2 bg-amber-500 text-white rounded-xl text-sm font-bold">Pesan tiket pertama</a></div></td></tr>
                 @endforelse
@@ -61,3 +111,19 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inisialisasi GLightbox agar mendeteksi class .glightbox
+            const lightbox = GLightbox({
+                selector: '.glightbox',
+                loop: true,               // User bisa lanjut next/prev gambar saat dalam mode besar
+                openEffect: 'zoom',       // Animasi halus memperbesar
+                closeEffect: 'zoom',      // Animasi halus mengecil
+                slideEffect: 'fade'
+            });
+        });
+    </script>
+@endpush

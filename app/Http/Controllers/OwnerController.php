@@ -25,19 +25,25 @@ class OwnerController extends Controller
             $date = today()->subDays($offset);
             return [
                 'label' => $date->format('d M'),
-                'value' => Pemesanan::whereDate('tanggal_kunjungan', $date)->sum('jumlah_tiket'),
+                'value' => \App\Models\DetailPemesanan::whereHas('pemesanan', function ($query) use ($date) {
+                    $query->whereDate('tanggal_kunjungan', $date);
+                })->sum('jumlah_tiket'),
             ];
         });
 
-        $ticketPerformance = Tiket::withSum(['pemesanans as sold_count' => function ($query) {
-            $query->whereIn('status', ['dibayar', 'selesai']);
+        $ticketPerformance = Tiket::withSum(['detailPemesanans as sold_count' => function ($query) {
+            $query->whereHas('pemesanan', function ($q) {
+                $q->whereIn('status', ['dibayar', 'selesai']);
+            });
         }], 'jumlah_tiket')->latest()->get();
 
         return view('owner.dashboard', [
             'dailyRevenue' => (clone $successfulPayments)->whereDate('tanggal_bayar', today())->sum('jumlah_bayar'),
             'monthlyRevenue' => (clone $successfulPayments)->whereMonth('tanggal_bayar', now()->month)->whereYear('tanggal_bayar', now()->year)->sum('jumlah_bayar'),
             'yearlyRevenue' => (clone $successfulPayments)->whereYear('tanggal_bayar', now()->year)->sum('jumlah_bayar'),
-            'totalVisitors' => Pemesanan::where('status', 'selesai')->sum('jumlah_tiket'),
+            'totalVisitors' => \App\Models\DetailPemesanan::whereHas('pemesanan', function ($query) {
+                $query->where('status', 'selesai');
+            })->sum('jumlah_tiket'),
             'totalBookings' => Pemesanan::count(),
             'pendingPayments' => Pembayaran::where('status_bayar', 'pending')->count(),
             'tickets' => Tiket::latest()->get(),

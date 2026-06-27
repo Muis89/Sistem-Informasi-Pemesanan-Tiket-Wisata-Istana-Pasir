@@ -102,6 +102,24 @@
     </div>
 </section>
 
+<!-- Galeri Foto Terbaru -->
+<section class="py-20 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <h2 class="text-xs font-bold text-sky-600 uppercase tracking-widest">📸 Galeri Foto</h2>
+            <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Momen Seru di Istana Pasir</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            @foreach(['estetik.jpeg', 'istana.jpg', 'kolam.jpg', 'images (3).webp', 'images (4).webp', '12.webp', 'hana.jpg', 'kolamm.jpg'] as $foto)
+                <div class="aspect-square w-full overflow-hidden rounded-2xl shadow-sm border border-slate-200">
+                    <img src="{{ asset('images/' . $foto) }}" alt="Foto Galeri" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
 <!-- Ticket List Section -->
 <section id="tiket" class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -153,7 +171,7 @@
 
                 <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
                     <div>
-                        <span class="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Sisa Slot</span>
+                        <span class="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Sisa Tiket</span>
                         <span class="font-bold text-sm text-amber-600">350 Tiket / Hari</span>
                     </div>
                     <a href="{{ url('/login') }}" class="px-5 py-3 bg-slate-900 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all">
@@ -209,7 +227,7 @@
 
                 <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
                     <div>
-                        <span class="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Sisa Slot</span>
+                        <span class="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Sisa Tiket</span>
                         <span class="font-bold text-sm text-amber-600">120 Tiket / Hari</span>
                     </div>
                     <a href="{{ url('/login') }}" class="px-5 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all">
@@ -257,7 +275,7 @@
 
                 <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
                     <div>
-                        <span class="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Sisa Slot</span>
+                        <span class="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Sisa Tiket</span>
                         <span class="font-bold text-sm text-amber-600">420 Tiket / Hari</span>
                     </div>
                     <a href="{{ url('/login') }}" class="px-5 py-3 bg-slate-900 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all">

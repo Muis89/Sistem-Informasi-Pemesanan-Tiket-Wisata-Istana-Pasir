@@ -45,12 +45,21 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        // 1. Tambahkan validasi regex di sini agar nama tidak boleh mengandung angka
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-Z\s.,\']+$/' // Hanya boleh huruf, spasi, titik, koma, dan petik (')
+            ],
             'email' => ['required', 'email', 'unique:users,email'],
             'username' => ['nullable', 'string', 'max:50', 'unique:users,username'],
             'phone' => ['nullable', 'string', 'max:30'],
             'password' => ['required', 'confirmed', 'min:6'],
+        ], [
+            // 2. Custom pesan error jika validasi regex gagal
+            'name.regex' => 'Nama lengkap hanya boleh berisi huruf dan spasi (boleh menggunakan tanda baca nama seperti titik atau koma).',
         ]);
 
         $user = User::create([

@@ -23,7 +23,14 @@
                             $badge = $booking->status === 'selesai' ? 'bg-slate-100 text-slate-700' : ($status === 'berhasil' || $booking->status === 'dibayar' ? 'bg-emerald-100 text-emerald-800' : ($status === 'gagal' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'));
                             $label = $booking->status === 'selesai' ? 'Selesai' : ($status === 'berhasil' || $booking->status === 'dibayar' ? 'Paid' : ($status === 'gagal' ? 'Ditolak' : 'Pending'));
                         @endphp
-                        <tr><td class="py-4 px-6 text-slate-900 font-bold">#IP-{{ str_pad($booking->id, 6, '0', STR_PAD_LEFT) }}</td><td class="py-4 px-6">{{ $booking->user->name }}</td><td class="py-4 px-6"><span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold">{{ $booking->tiket->nama_tiket }}</span></td><td class="py-4 px-6">{{ $booking->jumlah_tiket }} Pcs</td><td class="py-4 px-6 font-bold text-slate-950">Rp {{ number_format($booking->total_harga,0,',','.') }}</td><td class="py-4 px-6"><span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold {{ $badge }}">{{ $label }}</span></td></tr>
+                        <tr><td class="py-4 px-6 text-slate-900 font-bold">#IP-{{ str_pad($booking->id, 6, '0', STR_PAD_LEFT) }}</td><td class="py-4 px-6">{{ $booking->user->name }}</td><td class="py-4 px-6">
+    @foreach($booking->detailPemesanans as $detail)
+        <span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold mr-1 mb-1 block">{{ $detail->tiket->nama_tiket }}</span>
+    @endforeach
+</td>
+<td class="py-4 px-6">{{ $booking->detailPemesanans->sum('jumlah_tiket') }} Pcs</td>
+<td class="py-4 px-6 font-bold text-slate-950">Rp {{ number_format($booking->total_harga,0,',','.') }}</td>
+<td class="py-4 px-6"><span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold {{ $badge }}">{{ $label }}</span></td></tr>
                     @empty
                         <tr><td colspan="6" class="py-12 px-6 text-center text-slate-500">Belum ada transaksi pemesanan.</td></tr>
                     @endforelse
@@ -34,10 +41,10 @@
 
     <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200/60 shadow-sm p-6 space-y-6">
         <h3 class="text-base font-bold text-slate-900">Kapasitas Tiket Hari Ini</h3>
-        <div class="space-y-4">
+                <div class="space-y-4">
             @forelse($tikets as $ticket)
                 @php $percent = min(100, max(8, 100 - min(100, $ticket->stok / 5))); @endphp
-                <div class="space-y-1.5"><div class="flex justify-between text-xs font-semibold text-slate-600"><span>{{ $ticket->nama_tiket }}</span><span>{{ $ticket->stok }} stok</span></div><div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full {{ $ticket->stok < 50 ? 'bg-rose-500' : ($ticket->stok < 150 ? 'bg-amber-500' : 'bg-sky-500') }} rounded-full" style="width: {{ $percent }}%"></div></div></div>
+                <div class="space-y-1.5"><div class="flex justify-between text-xs font-semibold text-slate-600"><span>{{ $ticket->nama_tiket }}</span><span>{{ $ticket->stok }} tiket</span></div><div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full {{ $ticket->stok < 50 ? 'bg-rose-500' : ($ticket->stok < 150 ? 'bg-amber-500' : 'bg-sky-500') }} rounded-full" style="width: {{ $percent }}%"></div></div></div>
             @empty
                 <p class="text-sm text-slate-500">Belum ada data tiket.</p>
             @endforelse

@@ -2,7 +2,7 @@
 
 @section('title', 'Login')
 
-@section('content')
+@section('guest-content')
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-white to-sky-50 px-4 py-12">
     <div class="w-full max-w-md">
         <div class="text-center mb-8">

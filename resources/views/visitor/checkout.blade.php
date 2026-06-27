@@ -46,7 +46,14 @@
                 <h3 class="text-lg font-bold text-slate-900 pb-4 border-b border-slate-150">Rincian Pembayaran</h3>
                 <div class="space-y-4 text-sm font-medium">
                     <div class="flex justify-between text-slate-500"><span>ID Booking</span><span class="text-slate-900 font-bold">#IP-{{ str_pad($pemesanan->id, 6, '0', STR_PAD_LEFT) }}</span></div>
-                    <div class="flex justify-between text-slate-500"><span>Tiket Dipesan</span><span class="text-slate-900 font-bold text-right">{{ $pemesanan->tiket->nama_tiket }} ({{ $pemesanan->jumlah_tiket }}x)</span></div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Tiket Dipesan</span>
+                        <div class="text-slate-900 font-bold text-right">
+                            @foreach($pemesanan->detailPemesanans as $detail)
+                                <div class="text-xs">{{ $detail->tiket->nama_tiket }} ({{ $detail->jumlah_tiket }}x)</div>
+                            @endforeach
+                        </div>
+                    </div>
                     <div class="flex justify-between text-slate-500"><span>Periode Wisata</span><span class="text-slate-900 font-bold text-right">{{ optional($pemesanan->tanggal_kunjungan)->format('d M Y') }} - {{ optional($validUntil)->format('d M Y') }}</span></div>
                     <div class="flex justify-between text-slate-500"><span>Status Pembayaran</span><span class="font-bold {{ $pemesanan->pembayaran ? 'text-amber-600' : 'text-slate-900' }}">{{ $pemesanan->pembayaran ? ucfirst($pemesanan->pembayaran->status_bayar) : 'Belum Upload' }}</span></div>
                     <div class="border-t border-slate-100 pt-4 flex justify-between items-end"><span class="block text-xs text-slate-400 font-bold uppercase tracking-wider">Total Pembayaran</span><span class="text-2xl font-extrabold text-rose-600">Rp {{ number_format($pemesanan->total_harga,0,',','.') }}</span></div>
