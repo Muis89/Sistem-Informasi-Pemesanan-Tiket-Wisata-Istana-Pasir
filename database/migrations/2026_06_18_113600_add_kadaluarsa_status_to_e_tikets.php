@@ -7,7 +7,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE e_tikets MODIFY status_tiket ENUM('aktif', 'digunakan', 'kadaluarsa') NOT NULL DEFAULT 'aktif'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE e_tikets MODIFY status_tiket ENUM('aktif', 'digunakan', 'kadaluarsa') NOT NULL DEFAULT 'aktif'");
+        }
     }
 
     public function down(): void
@@ -16,6 +18,8 @@ return new class extends Migration
             ->where('status_tiket', 'kadaluarsa')
             ->update(['status_tiket' => 'aktif']);
 
-        DB::statement("ALTER TABLE e_tikets MODIFY status_tiket ENUM('aktif', 'digunakan') NOT NULL DEFAULT 'aktif'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE e_tikets MODIFY status_tiket ENUM('aktif', 'digunakan') NOT NULL DEFAULT 'aktif'");
+        }
     }
 };
